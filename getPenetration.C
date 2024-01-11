@@ -76,16 +76,20 @@ int main(int argc, char *argv[])
     }
 	OFstream outputFile(runTime.path()/"postProcessing"/"sprayPenetration");
 
-    outputFile << "#Time" << tab;
+    outputFile << "time" << tab;
     forAll(cloudFields, cloudField)
     {
         forAll(levelValues, levelValue)
         {
             outputFile << cloudFields[cloudField] << "@"
-                << levelValues[levelValue] << tab;
+                << levelValues[levelValue];
+            if ((cloudField != cloudFields.size() - 1) || (levelValue != levelValues.size() - 1))
+            {
+                outputFile << tab;
+            }
         }
     }
-    outputFile << endl;
+    outputFile << '\r' <<  endl;
 
 
     Info<< "\nStarting time loop\n" << endl;
@@ -123,11 +127,15 @@ int main(int argc, char *argv[])
                 (mesh.objectRegistry::lookupObjectRef<cloud>(cloudFields[cloudField]));
                 forAll(levelValues, levelValue)
                 {
-                    outputFile << spray.penetration(levelValues[levelValue]) << tab;
+                    outputFile << spray.penetration(levelValues[levelValue]);
+                    if ((cloudField != cloudFields.size() - 1) || (levelValue != levelValues.size() - 1))
+                    {
+                        outputFile << tab;
+                    }
                 }
             }
         }
-        outputFile << endl;
+        outputFile << '\r' << endl;
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
